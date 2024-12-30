@@ -1,0 +1,18 @@
+<h2>Our First App!</h2>
+<!-- <mat-card>
+  <mat-form-field>
+    <mat-label>Hello</mat-label>
+    <textarea matInput rows="6"  [value]="newPost" #postInput></textarea>
+  </mat-form-field>
+</mat-card> -->
+<mat-card>
+  <mat-form-field>
+    <mat-label>Create Your Post!</mat-label>
+    <input matInput type="text" [(ngModel)]="enteredTitle" placeholder="Post Title">
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Write something nice! c:</mat-label>
+    <textarea matInput rows="6"  [(ngModel)]="enteredContent"></textarea>
+  </mat-form-field>
+  <button mat-raised-button color="primary" (click)="onAddPost()">Save Post</button>
+</mat-card>
