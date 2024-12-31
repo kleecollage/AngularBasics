@@ -5,6 +5,12 @@
       <mat-panel-description> Click Me! </mat-panel-description>
     </mat-expansion-panel-header>
     <p>{{ p.content }}</p>
+    <mat-action-row>
+      <button mat-button>Edit</button>
+      <button mat-button>Delete</button>
+    </mat-action-row>
   </mat-expansion-panel>
 </mat-accordion>
-<h4 class="math-body-1 info-text" *ngIf="posts.length <= 0">No Posts Aded Yet!</h4>
+<h4 class="math-body-1 info-text" *ngIf="posts.length <= 0">
+  No Posts Aded Yet!
+</h4>
