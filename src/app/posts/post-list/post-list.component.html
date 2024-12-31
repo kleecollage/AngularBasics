@@ -6,8 +6,8 @@
     </mat-expansion-panel-header>
     <p>{{ p.content }}</p>
     <mat-action-row>
-      <button mat-button>Edit</button>
-      <button mat-button>Delete</button>
+      <button mat-button>EDIT</button>
+      <button mat-button (click)="onDelete(p.id)">DELETE</button>
     </mat-action-row>
   </mat-expansion-panel>
 </mat-accordion>
