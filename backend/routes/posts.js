@@ -1,7 +1,7 @@
 import express from 'express';
 import pkg from 'multer';
 import { Post } from '../models/post.js';
-const { multer } = pkg;
+const  multer  = pkg;
 
 const router = express.Router();
 
@@ -11,7 +11,7 @@ const MIME_TYPE_MAP = {
   'image/jpg': 'jpg',
 };
 
-const storage = pkg.diskStorage({
+const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const isValid = MIME_TYPE_MAP[file.mimetype];
     let error = new Error("invalid mime type")
@@ -28,7 +28,7 @@ const storage = pkg.diskStorage({
 });
 
 //** POST [ host/api/posts ] **//
-router.post('', pkg({storage: storage}).single('image'), (req,res,next) => {
+router.post('', multer({storage: storage}).single('image'), (req,res,next) => {
   const url = req.protocol + '://' + req.get('host');
   const post = new Post({
     title: req.body.title,
@@ -49,16 +49,32 @@ router.post('', pkg({storage: storage}).single('image'), (req,res,next) => {
 });
 
 //** PUT [ host/api/posts/:id ] **//
-router.put('/:id', (req, res, next) => {
-  const post = new Post({
-    _id: req.body.id,
+router.put('/:id', multer({storage: storage}).single('image'), (req, res, next) => {
+  // console.log(req.file);
+  let imagePath = req.body.imagePath;
+
+  if (req.file) {
+    const url = req.protocol + '://' + req.get('host');
+    imagePath = url + '/images/' + req.file.filename
+  }
+
+  const updatePost = {
+    // _id: req.body.id,
     title: req.body.title,
-    content: req.body.content
-  });
-  Post.updateOne({_id: req.params.id}, post).then(result => {
-    console.log(result);
+    content: req.body.content,
+    imagePath: imagePath
+  };
+
+  // console.log(updatePost);
+
+  Post.updateOne({_id: req.params.id}, updatePost).then(result => {
+    // console.log(result);
     res.status(200).json({message: 'Update Successful!'})
+  }).catch(e => {
+    console.error(error);
+    res.status(500).json({ message: 'Failed to update post.' });
   });
+
 })
 
 //** GET [ host/api/posts ] **//
