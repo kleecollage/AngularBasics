@@ -15,6 +15,16 @@
     </mat-action-row>
   </mat-expansion-panel>
 </mat-accordion>
+
 <h4 class="math-body-1 info-text" *ngIf="posts.length <= 0 && !isLoading">
   No Posts Aded Yet!
 </h4>
+
+<mat-paginator
+  *ngIf="posts.length > 0"
+  [length]="totalPosts"
+  [pageSize]="postsPerPage"
+  [pageSizeOptions]="pageSizeOptions"
+  (page)="onChangePage($event)"
+  aria-label="Select page">
+</mat-paginator>

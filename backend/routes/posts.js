@@ -1,8 +1,8 @@
 import express from 'express';
 import pkg from 'multer';
 import { Post } from '../models/post.js';
-const  multer  = pkg;
 
+const  multer  = pkg;
 const router = express.Router();
 
 const MIME_TYPE_MAP = {
@@ -66,7 +66,6 @@ router.put('/:id', multer({storage: storage}).single('image'), (req, res, next) 
   };
 
   // console.log(updatePost);
-
   Post.updateOne({_id: req.params.id}, updatePost).then(result => {
     // console.log(result);
     res.status(200).json({message: 'Update Successful!'})
@@ -79,12 +78,26 @@ router.put('/:id', multer({storage: storage}).single('image'), (req, res, next) 
 
 //** GET [ host/api/posts ] **//
 router.get('', (req, res, ext) => {
-  Post.find()
-    .then(documents => {
+  const pageSize = +req.query.pageSize;
+  const currentPage = +req.query.page;
+  const postQuery = Post.find();
+  let fetchedPosts
+
+  if (pageSize && currentPage) {
+    postQuery
+      .skip(pageSize * (currentPage - 1))
+      .limit(pageSize);
+  }
+
+  postQuery.then(documents => {
       // console.log(documents);
+      fetchedPosts = documents;
+      return Post.countDocuments()
+    }).then(count => {
       res.status(200).json({
         message: 'Posts fetched successfully',
-        posts: documents,
+        posts: fetchedPosts,
+        maxPosts: count
       });
     });
 });

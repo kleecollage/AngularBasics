@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -10,7 +11,14 @@ import { PostService } from '../posts.service';
 
 @Component({
   selector: 'app-post-list',
-  imports: [MatExpansionModule, MatButtonModule, CommonModule, RouterLink, MatProgressSpinnerModule],
+  imports: [
+    MatExpansionModule,
+    MatButtonModule,
+    CommonModule,
+    RouterLink,
+    MatProgressSpinnerModule,
+    MatPaginatorModule,
+  ],
   templateUrl: './post-list.component.html',
   styleUrls: ['./post-list.component.css'],
 })
@@ -25,24 +33,40 @@ export class PostListComponent implements OnInit, OnDestroy {
   // @Input() posts: Post[] = [];
   isLoading = false;
   posts: Post[] = [];
+  totalPosts = 0;
+  postsPerPage = 3;
+  currentPage = 1;
+  pageSizeOptions = [1, 2, 5, 10]
   private postsSub!: Subscription;
-
 
   constructor(public postsService: PostService) {}
 
   ngOnInit(): void {
     this.isLoading = true;
-    this.postsService.getPosts();
+    this.postsService.getPosts(this.postsPerPage, this.currentPage);
     this.postsSub = this.postsService
       .getPostUpdateListener()
-      .subscribe((posts: Post[]) => {
+      .subscribe((postData: {posts: Post[], postCount: number}) => {
         this.isLoading = false;
-        this.posts = posts;
+        this.posts = postData.posts;
+        this.totalPosts = postData.postCount;
       });
   }
 
+  onChangePage(pageData: PageEvent) {
+    // console.log(pageData);
+    this.isLoading = true;
+    this.currentPage = pageData.pageIndex + 1;
+    this.postsPerPage = pageData.pageSize;
+    this.postsService.getPosts(this.postsPerPage, this.currentPage);
+  }
+
+
   onDelete(postId: string) {
-    this.postsService.deletePost(postId);
+    this.isLoading = true;
+    this.postsService.deletePost(postId).subscribe(() => {
+      this.postsService.getPosts(this.postsPerPage, this.currentPage)
+    });
   }
 
   ngOnDestroy(): void {
