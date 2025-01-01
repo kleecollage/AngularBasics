@@ -2,18 +2,15 @@ import cors from 'cors';
 import express from 'express';
 import mongoose from 'mongoose';
 import path from 'path';
-import router from './routes/posts.js';
+import postsRouter from './routes/posts.js';
+import usersRouter from './routes/users.js';
 
 const app = express();
 
 //** DB CONNECTION **//
 mongoose.connect("mongodb+srv://mean_user:rootAccess@cluster0.zeg8wsi.mongodb.net/mean_posts?authMechanism=SCRAM-SHA-1")
- .then(() => {
-    console.log("Connected to MongoDB!");
- })
- .catch(() => {
-    console.log('Connection failed');
- });
+ .then(() => { console.log("Connected to MongoDB!") })
+ .catch(() => { console.log('Connection failed') });
 
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
@@ -40,6 +37,7 @@ app.use(cors({
   allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept']
 }));
 
-app.use("/api/posts", router);
+app.use("/api/posts", postsRouter);
+app.use("/api/user", usersRouter);
 
 export default app

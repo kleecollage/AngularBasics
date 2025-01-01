@@ -3,7 +3,7 @@ import pkg from 'multer';
 import { Post } from '../models/post.js';
 
 const  multer  = pkg;
-const router = express.Router();
+const postsRouter = express.Router();
 
 const MIME_TYPE_MAP = {
   'image/png': 'png',
@@ -28,7 +28,7 @@ const storage = multer.diskStorage({
 });
 
 //** POST [ host/api/posts ] **//
-router.post('', multer({storage: storage}).single('image'), (req,res,next) => {
+postsRouter.post('', multer({storage: storage}).single('image'), (req,res,next) => {
   const url = req.protocol + '://' + req.get('host');
   const post = new Post({
     title: req.body.title,
@@ -49,7 +49,7 @@ router.post('', multer({storage: storage}).single('image'), (req,res,next) => {
 });
 
 //** PUT [ host/api/posts/:id ] **//
-router.put('/:id', multer({storage: storage}).single('image'), (req, res, next) => {
+postsRouter.put('/:id', multer({storage: storage}).single('image'), (req, res, next) => {
   // console.log(req.file);
   let imagePath = req.body.imagePath;
 
@@ -77,7 +77,7 @@ router.put('/:id', multer({storage: storage}).single('image'), (req, res, next) 
 })
 
 //** GET [ host/api/posts ] **//
-router.get('', (req, res, ext) => {
+postsRouter.get('', (req, res, ext) => {
   const pageSize = +req.query.pageSize;
   const currentPage = +req.query.page;
   const postQuery = Post.find();
@@ -103,7 +103,7 @@ router.get('', (req, res, ext) => {
 });
 
 //** GET [ host/api/posts/:id ] **//
-router.get('/:id', (req, res, ext) => {
+postsRouter.get('/:id', (req, res, ext) => {
   Post.findById(req.params.id).then(post => {
     if (post) {
       res.status(200).json(post);
@@ -115,7 +115,7 @@ router.get('/:id', (req, res, ext) => {
 });
 
 //** DELETE [ host/api/posts/:id ] **//
-router.delete('/:id', (req, res, next) => {
+postsRouter.delete('/:id', (req, res, next) => {
   Post.deleteOne({_id: req.params.id})
     .then(result => {
       // console.log(req.params.id);
@@ -123,4 +123,4 @@ router.delete('/:id', (req, res, next) => {
     })
 })
 
-export default router;
+export default postsRouter;
