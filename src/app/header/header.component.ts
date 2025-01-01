@@ -4,6 +4,7 @@ import { MatCardModule } from "@angular/material/card";
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from "@angular/material/toolbar";
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -12,7 +13,8 @@ import { MatToolbarModule } from "@angular/material/toolbar";
     MatButtonModule,
     MatCardModule,
     MatDividerModule,
-    MatIconModule
+    MatIconModule,
+    RouterModule
    ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'

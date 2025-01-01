@@ -6,7 +6,8 @@
   </mat-form-field>
 </mat-card> -->
 <mat-card>
-  <form (submit)="onAddPost(postForm)" #postForm="ngForm">
+  <mat-spinner *ngIf="isLoading"></mat-spinner>
+  <form (submit)="onSavePost(postForm)" #postForm="ngForm" *ngIf="!isLoading">
     <mat-form-field>
       <mat-label>Make Your Own Post!</mat-label>
       <input
@@ -16,7 +17,7 @@
         placeholder="Post Title"
         required
         minlength="3"
-        ngModel
+        [ngModel]="post?.title"
         #title="ngModel" >
         <mat-error *ngIf="title.invalid">Please Enter the Post Title</mat-error>
     </mat-form-field>
@@ -27,7 +28,7 @@
         matInput
         rows="6"
         name="content"
-        ngModel
+        [ngModel]="post?.content"
         #content="ngModel"
         required></textarea>
         <mat-error *ngIf="content.invalid">This post is very empty. Write something</mat-error>
