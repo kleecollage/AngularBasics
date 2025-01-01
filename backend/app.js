@@ -1,6 +1,7 @@
 import cors from 'cors';
 import express from 'express';
 import mongoose from 'mongoose';
+import path from 'path';
 import router from './routes/posts.js';
 
 const app = express();
@@ -16,6 +17,7 @@ mongoose.connect("mongodb+srv://mean_user:rootAccess@cluster0.zeg8wsi.mongodb.ne
 
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
+app.use("/images", express.static(path.join('backend/images')))
 
 /* CORS CONFIG V1
 app.use((req, res, next) => {
