@@ -34,7 +34,8 @@ postsRouter.post('', checkAuth, multer({storage: storage}).single('image'), (req
   const post = new Post({
     title: req.body.title,
     content: req.body.content,
-    imagePath: url + '/images/' + req.file.filename
+    imagePath: url + '/images/' + req.file.filename,
+    creator: req.userData.userId
   });
   // console.log(post);
   post.save().then(createdPost => {
@@ -67,9 +68,11 @@ postsRouter.put('/:id', checkAuth, multer({storage: storage}).single('image'), (
   };
 
   // console.log(updatePost);
-  Post.updateOne({_id: req.params.id}, updatePost).then(result => {
+  Post.updateOne({_id: req.params.id, creator: req.userData.userId}, updatePost).then(result => {
     // console.log(result);
-    res.status(200).json({message: 'Update Successful!'})
+    if (result.modifiedCount > 0)
+      res.status(200).json({message: 'Update Successful!'});
+    else res.status(401).json({message: 'Not Authorized'});
   }).catch(e => {
     console.error(error);
     res.status(500).json({ message: 'Failed to update post.' });
@@ -117,10 +120,11 @@ postsRouter.get('/:id', (req, res, ext) => {
 
 //** DELETE [ host/api/posts/:id ] **//
 postsRouter.delete('/:id', checkAuth, (req, res, next) => {
-  Post.deleteOne({_id: req.params.id})
-    .then(result => {
+  Post.deleteOne({_id: req.params.id, creator: req.userData.userId}).then(result => {
       // console.log(req.params.id);
-      res.status(200).json({message: 'Post deleted!'})
+      if (result.deletedCount > 0)
+        res.status(200).json({message: 'Post deleted!'})
+      else res.status(401).json({message: 'Not Authorized'});
     })
 })
 

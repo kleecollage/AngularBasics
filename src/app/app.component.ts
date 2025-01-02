@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { AuthService } from './auth/auth.service';
 import { HeaderComponent } from "./header/header.component";
-import { Post } from "./posts/post.model";
 
 
 @Component({
@@ -10,11 +10,16 @@ import { Post } from "./posts/post.model";
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
 })
-export class AppComponent {
-  title = 'Angular-Basics';
-  storedPosts: Post[] = [];
+export class AppComponent implements OnInit {
+  title = 'MEAN App';
+  // storedPosts: Post[] = [];
+  // onPostAdded(post: Post) {
+  //   this.storedPosts.push(post);
+  // }
 
-  onPostAdded(post: Post) {
-    this.storedPosts.push(post);
+  constructor(private authService: AuthService) {}
+
+  ngOnInit() {
+    this.authService.autoAuthUser();
   }
 }
