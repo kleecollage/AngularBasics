@@ -49,6 +49,7 @@ export class PostService {
       title: string;
       content: string;
       imagePath: string;
+      creator: string;
     }>('http://localhost:3000/api/posts/' + id);
     // return {...this.posts.find(p => p.id === id)};
   }
@@ -100,6 +101,7 @@ export class PostService {
         title: title,
         content: content,
         imagePath: image,
+        creator: null,
       };
     }
     this.http

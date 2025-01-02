@@ -9,7 +9,7 @@
       <img [src]="p.imagePath" [alt]="p.title">
     </div>
     <p>{{ p.content }}</p>
-    <mat-action-row *ngIf="userIsAuthenticated">
+    <mat-action-row *ngIf="userIsAuthenticated && userId === p.creator">
       <button [routerLink]="['/edit', p.id]" routerLinkActive="router-link-active"  mat-button>EDIT</button>
       <button mat-button (click)="onDelete(p.id)">DELETE</button>
     </mat-action-row>
