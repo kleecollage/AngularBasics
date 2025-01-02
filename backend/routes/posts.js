@@ -1,5 +1,6 @@
 import express from 'express';
 import pkg from 'multer';
+import checkAuth from '../middleware/check-auth.js';
 import { Post } from '../models/post.js';
 
 const  multer  = pkg;
@@ -28,7 +29,7 @@ const storage = multer.diskStorage({
 });
 
 //** POST [ host/api/posts ] **//
-postsRouter.post('', multer({storage: storage}).single('image'), (req,res,next) => {
+postsRouter.post('', checkAuth, multer({storage: storage}).single('image'), (req,res,next) => {
   const url = req.protocol + '://' + req.get('host');
   const post = new Post({
     title: req.body.title,
@@ -49,7 +50,7 @@ postsRouter.post('', multer({storage: storage}).single('image'), (req,res,next) 
 });
 
 //** PUT [ host/api/posts/:id ] **//
-postsRouter.put('/:id', multer({storage: storage}).single('image'), (req, res, next) => {
+postsRouter.put('/:id', checkAuth, multer({storage: storage}).single('image'), (req, res, next) => {
   // console.log(req.file);
   let imagePath = req.body.imagePath;
 
@@ -115,7 +116,7 @@ postsRouter.get('/:id', (req, res, ext) => {
 });
 
 //** DELETE [ host/api/posts/:id ] **//
-postsRouter.delete('/:id', (req, res, next) => {
+postsRouter.delete('/:id', checkAuth, (req, res, next) => {
   Post.deleteOne({_id: req.params.id})
     .then(result => {
       // console.log(req.params.id);
