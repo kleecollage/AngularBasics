@@ -6,6 +6,7 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { AuthService } from '../../auth/auth.service';
 import { Post } from '../post.model';
 import { PostService } from '../posts.service';
 
@@ -36,10 +37,12 @@ export class PostListComponent implements OnInit, OnDestroy {
   totalPosts = 0;
   postsPerPage = 3;
   currentPage = 1;
-  pageSizeOptions = [1, 2, 5, 10]
+  pageSizeOptions = [1, 2, 5, 10];
+  userIsAuthenticated = false;
   private postsSub!: Subscription;
+  private authStatusSub: Subscription;
 
-  constructor(public postsService: PostService) {}
+  constructor(public postsService: PostService, private authService: AuthService) {}
 
   ngOnInit(): void {
     this.isLoading = true;
@@ -51,6 +54,12 @@ export class PostListComponent implements OnInit, OnDestroy {
         this.posts = postData.posts;
         this.totalPosts = postData.postCount;
       });
+      this.userIsAuthenticated = this.authService.getIsAuth();
+      this.authStatusSub =  this.authService
+        .getAuthStatusListener()
+        .subscribe(isAuthenticated => {
+          this.userIsAuthenticated = isAuthenticated;
+        });
   }
 
   onChangePage(pageData: PageEvent) {
@@ -71,5 +80,6 @@ export class PostListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.postsSub.unsubscribe();
+    this.authStatusSub.unsubscribe();
   }
 }

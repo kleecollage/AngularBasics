@@ -34,7 +34,7 @@ app.use((req, res, next) => {
 app.use(cors({
   origin: '*', // allow all hosts
   methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept']
+  allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization']
 }));
 
 app.use("/api/posts", postsRouter);
