@@ -5,6 +5,7 @@ import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { authInterceptor } from './auth/auth-interceptor';
 import { AuthGuard } from './auth/auth.guard';
+import { errorInterceptor } from './error-interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -12,7 +13,8 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideAnimationsAsync(),
-    provideHttpClient(withInterceptors([authInterceptor])),
+    provideHttpClient(withInterceptors([authInterceptor, errorInterceptor])),
+    // NOT ALLOW ON STANDALONE APPS //
     // provideHttpClient(),
     // {
     //   provide: HTTP_INTERCEPTORS,
