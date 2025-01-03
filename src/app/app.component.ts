@@ -8,8 +8,9 @@ import { HeaderComponent } from "./header/header.component";
   selector: 'app-root',
   imports: [HeaderComponent, RouterOutlet],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css',
+  styleUrl: './app.component.css'
 })
+
 export class AppComponent implements OnInit {
   title = 'MEAN App';
   // storedPosts: Post[] = [];

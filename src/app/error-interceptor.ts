@@ -1,17 +1,25 @@
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
+import { inject } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { catchError, throwError } from 'rxjs';
+import { ErrorComponent } from './error/error.component';
 
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
-  const observer = {
-    next: (event: any) => event,
-    error: (error: HttpErrorResponse) => {
-      console.log(error);
-      alert(error.error.message)
-      return throwError(() => error);
-    },
-    complete: () => console.log('Error handling complete'),
-  }
+  const dialog = inject(MatDialog);
+
   return next(req).pipe(
-    catchError((error: HttpErrorResponse) => observer.error(error) )
+    catchError((error: HttpErrorResponse) => {
+      console.log(error);
+      let errorMessage = 'An unknown error occurred!';
+      if (error.error?.message) {
+        errorMessage = error.error.message;
+      }
+
+      dialog.open(ErrorComponent, {
+        data: { message: errorMessage }
+      });
+
+      return throwError(() => error);
+    })
   );
 };
