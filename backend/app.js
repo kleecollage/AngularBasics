@@ -8,7 +8,7 @@ import usersRouter from './routes/users.js';
 const app = express();
 
 //** DB CONNECTION **//
-mongoose.connect("mongodb+srv://mean_user:rootAccess@cluster0.zeg8wsi.mongodb.net/mean_posts?authMechanism=SCRAM-SHA-1")
+mongoose.connect("mongodb+srv://mean_user:" + process.env.MONGO_ATLAS_PWD + "@cluster0.zeg8wsi.mongodb.net/mean_posts?authMechanism=SCRAM-SHA-1")
  .then(() => { console.log("Connected to MongoDB!") })
  .catch(() => { console.log('Connection failed') });
 
