@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
 import { MatCardModule } from "@angular/material/card";
@@ -7,6 +7,8 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatInputModule } from "@angular/material/input";
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute, ParamMap } from "@angular/router";
+import { Subscription } from "rxjs";
+import { AuthService } from "../../auth/auth.service";
 import { Post } from "../post.model";
 import { PostService } from "../posts.service";
 import { mimeType } from "./mime-type.validator";
@@ -26,7 +28,7 @@ import { mimeType } from "./mime-type.validator";
   ],
 })
 
-export class PostCreateComponent implements OnInit {
+export class PostCreateComponent implements OnInit, OnDestroy {
   // newPost = 'NO CONTENT';
   // @Output() postCreated = new EventEmitter<Post>();
   enteredTitle = '';
@@ -37,10 +39,18 @@ export class PostCreateComponent implements OnInit {
   imagePreview: string = '';
   private mode = 'create';
   private postId: string;
+  private authStatusSub: Subscription;
 
-  constructor(public postService: PostService, public route: ActivatedRoute) {}
+  constructor(
+    public postService: PostService,
+    public route: ActivatedRoute,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
+    this.authStatusSub = this.authService
+      .getAuthStatusListener()
+      .subscribe( authStatus => this.isLoading = false )
     //** REACTIVE FORM **//
     this.form = new FormGroup({
       title: new FormControl(null, {
@@ -121,5 +131,9 @@ export class PostCreateComponent implements OnInit {
     reader.readAsDataURL(file);
     // console.log(file);
     // console.log(this.form);
+  }
+
+  ngOnDestroy(): void {
+    this.authStatusSub.unsubscribe();
   }
 }

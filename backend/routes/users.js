@@ -22,7 +22,7 @@ usersRouter.post("/signup", (req, res, next) => {
         })
         .catch(err => {
           res.status(500).json({
-            error: err
+            message: 'Oops. Somethig went wrong. Try again later'
           });
         });
     });
@@ -33,11 +33,11 @@ usersRouter.post("/login", async (req, res, next) => {
   try {
     const user = await User.findOne({ email: req.body.email });
     if (!user)
-      return res.status(401).json({ message: "Auth failed" });
+      return res.status(401).json({ message: "Invalid Authenticaton Credentials" });
 
     const isPasswordValid = await bcrypt.compare(req.body.password, user.password);
     if (!isPasswordValid)
-      return res.status(401).json({ message: "Auth failed" });
+      return res.status(401).json({ message: "Invalid Authenticaton Credentials" });
 
     // TOKEN //
     const token = jwt.sign(
@@ -53,7 +53,7 @@ usersRouter.post("/login", async (req, res, next) => {
     });
   } catch (err) {
     console.error(err);
-    return res.status(500).json({ message: "An error occurred" });
+    return res.status(500).json({ message: "Oops. An error occurred" });
   }
 });
 

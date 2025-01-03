@@ -76,9 +76,19 @@ export class PostListComponent implements OnInit, OnDestroy {
 
   onDelete(postId: string) {
     this.isLoading = true;
-    this.postsService.deletePost(postId).subscribe(() => {
-      this.postsService.getPosts(this.postsPerPage, this.currentPage)
-    });
+    this.postsService.deletePost(postId).subscribe({
+      next: () => {
+        this.postsService.getPosts(this.postsPerPage, this.currentPage)
+        this.isLoading = false;
+      },
+      error: (error) => {
+        console.log('Something went wroong on deleting post');
+        this.isLoading = false;
+      },
+      complete: () => {
+        console.log('Delete operation succeeded');
+      }
+    })
   }
 
   ngOnDestroy(): void {

@@ -47,6 +47,9 @@ postsRouter.post('', checkAuth, multer({storage: storage}).single('image'), (req
         id: createdPost._id,
       }
     });
+  })
+  .catch(error => {
+    res.status(500).json({message: 'Failed on creating post :('})
   });
 });
 
@@ -72,8 +75,8 @@ postsRouter.put('/:id', checkAuth, multer({storage: storage}).single('image'), (
   Post.updateOne({_id: req.params.id, creator: req.userData.userId}, updatePost).then(result => {
     // console.log(result);
     if (result.modifiedCount > 0)
-      res.status(200).json({message: 'Update Successful!'});
-    else res.status(401).json({message: 'Not Authorized'});
+      res.status(200).json({ message: 'Update Successful!' });
+    else res.status(401).json({ message: 'You are not authorized to update this post' });
   }).catch(e => {
     console.error(error);
     res.status(500).json({ message: 'Failed to update post.' });
@@ -104,7 +107,10 @@ postsRouter.get('', (req, res, ext) => {
         posts: fetchedPosts,
         maxPosts: count
       });
-    });
+    }).catch(e => {
+      console.error(error);
+      res.status(500).json({ message: 'Failed to fetching posts :(' });
+    });;
 });
 
 //** GET [ host/api/posts/:id ] **//
@@ -115,7 +121,10 @@ postsRouter.get('/:id', (req, res, ext) => {
     } else {
       res.status(404).json({message: 'Oops. Post not found!'})
     }
-  })
+  }).catch(e => {
+    console.error(error);
+    res.status(500).json({ message: 'Failed to fetch post :(' });
+  });
 
 });
 
@@ -126,7 +135,10 @@ postsRouter.delete('/:id', checkAuth, (req, res, next) => {
       if (result.deletedCount > 0)
         res.status(200).json({message: 'Post deleted!'})
       else res.status(401).json({message: 'Not Authorized'});
-    })
+    }).catch(e => {
+      console.error(error);
+      res.status(500).json({ message: 'Failed to deleting post :(.' });
+    });
 })
 
 export default postsRouter;
