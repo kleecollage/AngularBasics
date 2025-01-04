@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "Angular-Basicas": {
+    "MEAN-App": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/angular-basicas",
+            "outputPath": "dist/angular-basics",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -46,7 +46,17 @@
                   "maximumError": "8kB"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "optimization": true,
+              "sourceMap": false,
+              "namedChunks": false,
+              "aot": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ]
             },
             "development": {
               "optimization": false,
@@ -60,10 +70,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "Angular-Basicas:build:production"
+              "buildTarget": "MEAN-App:build:production"
             },
             "development": {
-              "buildTarget": "Angular-Basicas:build:development"
+              "buildTarget": "MEAN-App:build:development"
             }
           },
           "defaultConfiguration": "development"

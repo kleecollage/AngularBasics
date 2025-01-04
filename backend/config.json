@@ -1,0 +1,7 @@
+[
+  {
+    "Namespace": "aws:autoscaling:launchconfiguration",
+    "OptionName": "LaunchTemplate",
+    "Value": "aws-elasticbeanstalk-launch-template"
+  }
+]

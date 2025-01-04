@@ -14,7 +14,7 @@ mongoose.connect("mongodb+srv://mean_user:" + process.env.MONGO_ATLAS_PWD + "@cl
 
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
-app.use("/images", express.static(path.join('backend/images')))
+app.use("/images", express.static(path.join('images')))
 
 /* CORS CONFIG V1
 app.use((req, res, next) => {
