@@ -1,11 +1,12 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
+import Compressor from 'compressorjs';
 import { map, Subject } from "rxjs";
 import { environment } from '../../environments/environment';
 import { Post } from "./post.model";
 
-const BACKEND_URL = environment.apiUrl + '/posts/';
+const BACKEND_URL = environment.apiUrl + '/posts';
 
 @Injectable({ providedIn: 'root' })
 export class PostService {
@@ -53,7 +54,7 @@ export class PostService {
       content: string;
       imagePath: string;
       creator: string;
-    }>(BACKEND_URL + id);
+    }>(BACKEND_URL + '/' + id);
     // return {...this.posts.find(p => p.id === id)};
   }
 
@@ -62,14 +63,20 @@ export class PostService {
   }
 
   addPost(title: string, content: string, image: File) {
-    // const post: Post = { id: '', title: title, content: content };
-    const postData = new FormData();
-    postData.append('title', title);
-    postData.append('content', content);
-    postData.append('image', image, title);
-    this.http
-      .post<{ message: string; post: Post }>(BACKEND_URL, postData)
-      .subscribe((responseData) => {
+    new Compressor(image, {
+      quality: 0.6,
+      maxWidth: 1920,
+      maxHeight: 1080,
+      success: (compressedImage) => {
+        const postData = new FormData();
+        postData.append('title', title);
+        postData.append('content', content);
+        postData.append('image', image, title);
+        this.http
+          .post<{ message: string; post: Post }>(BACKEND_URL, postData)
+          .subscribe((responseData) => {
+            this.router.navigate(['/']);
+          })
         // console.log(responseData.message);
         // const post: Post = {
         //   id: responseData.post.id,
@@ -81,8 +88,8 @@ export class PostService {
         // post.id = id;
         // this.posts.push(post);
         // this.postsUpdated.next([...this.posts]);
-        this.router.navigate(['/']);
-      });
+      },
+    })
   }
 
   updatePost(id: string, title: string, content: string, image: File | string) {
@@ -105,7 +112,7 @@ export class PostService {
       };
     }
     this.http
-      .put(BACKEND_URL + id, postData)
+      .put(BACKEND_URL + '/' + id, postData)
       .subscribe((response) => {
         // console.log(response);
         // const updatedPosts = [...this.posts];
@@ -124,7 +131,7 @@ export class PostService {
   }
 
   deletePost(postId: string) {
-    return this.http.delete(BACKEND_URL + postId)
+    return this.http.delete(BACKEND_URL + '/' + postId)
       // .subscribe(() => {
       //   const updatedPosts = this.posts.filter((post) => post.id !== postId);
       //   this.posts = updatedPosts;

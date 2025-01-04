@@ -12,8 +12,8 @@ mongoose.connect("mongodb+srv://mean_user:" + process.env.MONGO_ATLAS_PWD + "@cl
  .then(() => { console.log("Connected to MongoDB!") })
  .catch(() => { console.log('Connection failed') });
 
-app.use(express.json());
-app.use(express.urlencoded({extended: false}));
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ limit: '10mb', extended: false }));
 app.use("/images", express.static(path.join('images')))
 
 /* CORS CONFIG V1
